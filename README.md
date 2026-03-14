@@ -1,3 +1,7 @@
-# skyline-vision-project-4
+# WebGL Искажение Текста
 
-Initial repository setup for pr-poehali-dev/skyline-vision-project-4
+![Preview](preview.png)
+
+Hero-секция с WebGL-эффектом искажения текста. При наведении курсора текст увеличивается с радужным градиентом, добавлены CRT-эффекты: сканлайны, виньетка, фосфорное свечение и шум. Идеально для креативных сайтов и лендингов.
+
+`"tags": ["hero", "dark", "creative", "animations", "webgl"]`

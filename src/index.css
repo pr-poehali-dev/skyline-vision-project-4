@@ -90,12 +90,24 @@
   }
 }
 
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-black text-foreground;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
   }
 }
