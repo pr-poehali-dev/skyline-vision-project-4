@@ -207,14 +207,14 @@ export default function WebGLTextDistortion() {
       textCanvas.width = actualTextWidth + (internalPadding * 2)
       textCanvas.height = window.innerHeight
 
-      ctx.fillStyle = '#000000'
+      ctx.fillStyle = '#000a00'
       ctx.fillRect(0, 0, textCanvas.width, textCanvas.height)
 
-      ctx.fillStyle = '#808080'
+      ctx.fillStyle = '#1a6b1a'
       ctx.font = '12px monospace'
 
-      const text = 'неа '
-      const specialText = 'вот это да'
+      const text = 'ok '
+      const specialText = 'УЯЗВИМОСТЬ'
       const lineHeight = 16
 
       const horizontalOffset = internalPadding
@@ -227,7 +227,7 @@ export default function WebGLTextDistortion() {
       const standardLineLength = nopesPerLine * text.length
 
       let specialInserted = false
-      let specialTextNormalizedPos = { x: 0, y: 0 }
+      const specialTextNormalizedPos = { x: 0, y: 0 }
 
       for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
         const y = lineIndex * lineHeight
@@ -304,9 +304,9 @@ export default function WebGLTextDistortion() {
         specialTextNormalizedPos.x = (horizontalOffset + (totalCharPosition * actualCharWidth)) / textCanvas.width
         specialTextNormalizedPos.y = (y + lineHeight) / textCanvas.height
 
-        ctx.fillStyle = '#000000'
+        ctx.fillStyle = '#000a00'
         ctx.fillRect(0, y, textCanvas.width, lineHeight)
-        ctx.fillStyle = '#808080'
+        ctx.fillStyle = '#1a6b1a'
         ctx.fillText(line, horizontalOffset, y + lineHeight)
       }
 
@@ -531,12 +531,100 @@ export default function WebGLTextDistortion() {
   }, [])
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-black flex justify-center px-[0] touch-none">
-      <canvas
-        ref={canvasRef}
-        className="border-0"
-        style={{ display: 'block' }}
-      />
+    <div className="w-full min-h-screen overflow-x-hidden bg-[#000a00] flex flex-col items-center touch-none">
+      {/* Header */}
+      <div className="w-full flex justify-center py-6 z-10 relative">
+        <div className="flex items-center gap-3">
+          <span className="text-green-400 font-mono text-2xl font-bold tracking-widest">[SECAUDIT]</span>
+          <span className="text-green-700 font-mono text-sm">v1.0.0</span>
+        </div>
+      </div>
+
+      {/* WebGL canvas */}
+      <div className="w-full flex justify-center px-0 touch-none" style={{ height: '100vh' }}>
+        <canvas
+          ref={canvasRef}
+          className="border-0"
+          style={{ display: 'block' }}
+        />
+      </div>
+
+      {/* Subtitle below canvas */}
+      <div className="w-full flex flex-col items-center py-12 gap-4 bg-[#000a00] z-10 relative">
+        <p className="text-green-600 font-mono text-sm tracking-widest text-center px-4">
+          НАВЕДИ КУРСОР — ОБНАРУЖИВАЙ УЯЗВИМОСТИ
+        </p>
+        <div className="flex gap-6 flex-wrap justify-center">
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-green-400 font-mono text-xl font-bold">ПРАВА</span>
+            <span className="text-green-800 font-mono text-xs">ДОСТУПА</span>
+          </div>
+          <div className="text-green-800 font-mono self-center">|</div>
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-green-400 font-mono text-xl font-bold">СЕТЬ</span>
+            <span className="text-green-800 font-mono text-xs">АУДИТ</span>
+          </div>
+          <div className="text-green-800 font-mono self-center">|</div>
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-green-400 font-mono text-xl font-bold">ПАКЕТЫ</span>
+            <span className="text-green-800 font-mono text-xs">АНАЛИЗ</span>
+          </div>
+        </div>
+
+        {/* Audit blocks */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl w-full px-6 mt-8">
+          {[
+            {
+              title: 'ПРАВА ДОСТУПА',
+              cmd: '$ find / -perm -4000 2>/dev/null',
+              items: ['SUID-файлы', 'Мировая запись', 'SSH-ключи', '/etc/shadow'],
+              status: 'АНАЛИЗ',
+              color: 'border-green-800',
+            },
+            {
+              title: 'СЕТЕВОЙ АУДИТ',
+              cmd: '$ ss -tulnp | netstat -an',
+              items: ['Открытые порты', 'Активные службы', 'Firewall правила', 'DNS утечки'],
+              status: 'МОНИТОРИНГ',
+              color: 'border-green-700',
+            },
+            {
+              title: 'АУДИТ ПАКЕТОВ',
+              cmd: '$ dpkg -l | apt list --upgradable',
+              items: ['CVE уязвимости', 'Устаревшие пакеты', 'Orphan зависимости', 'Kernel версия'],
+              status: 'СКАНИРОВАНИЕ',
+              color: 'border-green-800',
+            },
+          ].map((block) => (
+            <div
+              key={block.title}
+              className={`border ${block.color} bg-[#000d00] p-4 font-mono`}
+            >
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-green-400 text-xs font-bold tracking-wider">{block.title}</span>
+                <span className="text-green-700 text-xs animate-pulse">{block.status}</span>
+              </div>
+              <div className="text-green-800 text-xs mb-3 truncate">{block.cmd}</div>
+              <ul className="space-y-1">
+                {block.items.map((item) => (
+                  <li key={item} className="text-green-600 text-xs flex items-center gap-2">
+                    <span className="text-green-800">›</span> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <button className="mt-8 border border-green-500 text-green-400 font-mono text-sm px-8 py-3 hover:bg-green-950 transition-colors tracking-widest">
+          ЗАПУСТИТЬ АУДИТ
+        </button>
+
+        <p className="text-green-900 font-mono text-xs mt-4 text-center px-4">
+          Python · Linux · Анализ прав / Сеть / Пакеты
+        </p>
+      </div>
     </div>
   )
 }
